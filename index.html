@@ -23,7 +23,7 @@
         var myVinegar;
         var mylemonJuice;
         var myNaHCO3;
-        var myBrush;
+        var myDropper;
         var myTurmeric;
         var myGameArea;
         var myText;
@@ -34,13 +34,13 @@
             myBackground = new picture(1301 / 1.5, 791 / 1.5, 'bg.jpg', 0, 0, '', '')
             // mySquare = new component(150, 150, "white", 127, 294, 'Paint this...', '');
             mySquare = new picture(125, 150, "emptyBeaker.png", 127, 315, 'Paint this...', '');
-            mySoapSoln = new picture(50, 50, "blueBeaker.png", 450, 394, 'Soap Soln', baseText);
+            mySoapSoln = new picture(50, 50, "blueBeaker.png", 450, 394, 'Soap Solution', baseText);
             myVinegar = new picture(50, 50, "blueBeaker.png", 520, 394, 'Vinegar', acidText);
-            mylemonJuice = new picture(50, 50, "blueBeaker.png", 590, 394, 'lemonJuice', acidText);
-            myNaHCO3 = new picture(50, 50, "blueBeaker.png", 660, 394, 'Baking Soda Soln', baseText);
+            mylemonJuice = new picture(50, 50, "blueBeaker.png", 590, 394, 'Lemon Juice', acidText);
+            myNaHCO3 = new picture(50, 50, "blueBeaker.png", 660, 394, 'Baking Soda', baseText);
             myTurmeric = new picture(50, 50, "yellowBeaker.png", 730, 394, 'Turmeric', 'Turmeric');
-            // myBrush = new component(25, 25, "white", 570, 330, 'brush', '');
-            myBrush = new picture(20, 70, "dropper.png", 570, 240, '', '');
+            // myDropper = new component(25, 25, "white", 570, 330, 'brush', '');
+            myDropper = new picture(20, 70, "dropper.png", 570, 240, '', '');
             myText = new textComponent('15px', 'consolas', 'black', (1301 / 1.5) / 2.5, (791 / 1.5) / 2);
             myGameArea.start();
         }
@@ -76,12 +76,17 @@
 
             this.update = function () {
                 ctx = myGameArea.context;
+                ctx.save();
                 ctx.drawImage(this.image,
                     this.x,
                     this.y,
                     this.width, this.height);
-                ctx.fillText(this.text, this.x + (this.width / 2 - (this.text.length * 2.5)), this.y + (this.height / 2));
+                // ctx.fillText(this.text, this.x + (this.width / 2 - (this.text.length * 2.5)), this.y + (this.height / 2));
+                ctx.textAlign = 'center';
 
+                wrapText(ctx, this.text, this.x + (this.width / 2 ), this.y + (this.height / 2), 30, 10 )
+                // - (this.text.length * 2.5)
+                ctx.restore();
             }
             this.crashWith = function (otherobj) {
                 var obj = this;
@@ -136,6 +141,8 @@
                     line = testLine;
                 }
             }
+            // context.textAlign = 'center';
+
             context.fillText(line, x, y);
         }
 
@@ -155,8 +162,10 @@
                 ctx.fillRect(this.x, this.y, this.width, this.height);
                 ctx.fillStyle = "#000000";
                 ctx.shadowBlur = 10;
-                ctx.fillText(this.text, this.x + (this.width / 2 - (this.text.length * 2.5)), this.y + (this.height / 2) + (this.height / 1.3));
+                ctx.fillText(this.text, this.x + (this.width / 2 ), this.y + (this.height / 2) );
                 ctx.shadowColor = "black";
+                // - (this.text.length * 2.5)
+                // + (this.height / 1.3)
             }
 
             this.crashWith = function (otherobj) {
@@ -190,7 +199,7 @@
 
         myGameArea.canvas.addEventListener('mousedown', mousedown)
         function mousedown(event) {
-            if (checkFocus(event, myBrush)) {
+            if (checkFocus(event, myDropper)) {
                 myGameArea.canvas.addEventListener('mousemove', mousemove)
                 myGameArea.canvas.addEventListener('mouseup', mouseup)
             }
@@ -204,22 +213,22 @@
             myGameArea.y = event.pageY;
             updateGameArea();
         }
-        myGameArea.canvas.addEventListener('touchstart', touchDown)
-        function touchDown(event) {
-            if (checkFocus(event, myBrush)) {
-                myGameArea.canvas.addEventListener('touchmove', touchMove)
-                myGameArea.canvas.addEventListener('touchend', touchEnd)
-            }
-        }
-        function touchEnd(event) {
-            myGameArea.canvas.removeEventListener('touchmove', touchMove)
-            myGameArea.canvas.removeEventListener('touchend', touchEnd)
-        }
-        function touchMove(event) {
-            myGameArea.x = event.pageX;
-            myGameArea.y = event.pageY;
-            updateGameArea();
-        }
+        // myGameArea.canvas.addEventListener('touchstart', touchDown)
+        // function touchDown(event) {
+        //     if (checkFocus(event, myDropper)) {
+        //         myGameArea.canvas.addEventListener('touchmove', touchMove)
+        //         myGameArea.canvas.addEventListener('touchend', touchEnd)
+        //     }
+        // }
+        // function touchEnd(event) {
+        //     myGameArea.canvas.removeEventListener('touchmove', touchMove)
+        //     myGameArea.canvas.removeEventListener('touchend', touchEnd)
+        // }
+        // function touchMove(event) {
+        //     myGameArea.x = event.pageX;
+        //     myGameArea.y = event.pageY;
+        //     updateGameArea();
+        // }
 
 
         function checkCrash(currObj, otherobj) {
@@ -240,11 +249,12 @@
 
         function updateCrash(obj) {
             mouseup()
-            myBrush.solution = obj.solution;
-            // myBrush.text = obj.text;
+            myDropper.solution = obj.solution;
+            // myDropper.text = obj.text;
 
-            myBrush.x = myBrush.initialX;
-            myBrush.y = myBrush.initialY;
+            myDropper.x = myDropper.initialX;
+            myDropper.y = myDropper.initialY;
+            myDropper.text = obj.text;
             // myGameArea.stop();
             myGameArea.x = null;
             myGameArea.y = null;
@@ -252,50 +262,52 @@
 
         function updateGameArea() {
             // myText.text ='Hello'
-            if (myBrush.crashWith(myTurmeric)) {
+            if (myDropper.crashWith(myTurmeric)) {
                 updateCrash(myTurmeric)
-                myBrush.image.src = 'yellowDropper.png'
-
+                myDropper.image.src = 'yellowDropper.png'
+                myDropper.text = 'Turmeric Solution'
             }
-            else if (myBrush.crashWith(myVinegar)) {
+            else if (myDropper.crashWith(myVinegar)) {
                 updateCrash(myVinegar)
-                myBrush.image.src = 'blueDropper.png'
+                myDropper.image.src = 'blueDropper.png'
             }
 
-            else if (myBrush.crashWith(mylemonJuice)) {
+            else if (myDropper.crashWith(mylemonJuice)) {
                 updateCrash(mylemonJuice)
-                myBrush.image.src = 'blueDropper.png'
+                myDropper.image.src = 'blueDropper.png'
 
             }
-            else if (myBrush.crashWith(myNaHCO3)) {
+            else if (myDropper.crashWith(myNaHCO3)) {
                 updateCrash(myNaHCO3)
-                myBrush.image.src = 'blueDropper.png'
+                myDropper.image.src = 'blueDropper.png'
 
             }
-            else if (myBrush.crashWith(mySoapSoln)) {
+            else if (myDropper.crashWith(mySoapSoln)) {
                 updateCrash(mySoapSoln)
-                myBrush.image.src = 'blueDropper.png'
+                myDropper.image.src = 'blueDropper.png'
 
             }
 
-            else if (myBrush.crashWith(mySquare)) {
+            else if (myDropper.crashWith(mySquare)) {
+                myDropper.text = ''
+
                 mouseup()
 
                 // switch (mySquare.solution) {
                 //     case mySquare.initialSolution:
-                //         // mySquare.text = myBrush.text;
-                //         mySquare.text = myBrush.solution;
-                //         mySquare.solution = myBrush.solution;
+                //         // mySquare.text = myDropper.text;
+                //         mySquare.text = myDropper.solution;
+                //         mySquare.solution = myDropper.solution;
                 //         break;
                 //     case myTurmeric.solution:
-                //         if (myBrush.solution === baseText) {
+                //         if (myDropper.solution === baseText) {
                 //             mySquare.color = 'Red'
                 //             mySquare.solution = 'Vermilion';
                 //             mySquare.text = 'Vermilion';
                 //         }
                 //         break;
                 //     case 'Vermilion':
-                //         if (myBrush.solution === acidText) {
+                //         if (myDropper.solution === acidText) {
                 //             mySquare.color = 'Yellow'
                 //             mySquare.solution = myTurmeric.solution;
                 //             mySquare.text = myTurmeric.text;
@@ -303,7 +315,7 @@
                 //         break;
 
                 //     case baseText:
-                //     if (myBrush.solution === acidText) {
+                //     if (myDropper.solution === acidText) {
 
                 //     }
                 //         break;
@@ -315,30 +327,30 @@
 
 
                 if (mySquare.solution === mySquare.initialSolution) {
-                    // mySquare.text = myBrush.text;
-                    mySquare.text = myBrush.solution;
-                    mySquare.solution = myBrush.solution;
-                    myText.text = 'Use and Base to turn the solution in the beaker to red'
+                    // mySquare.text = myDropper.text;
+                    mySquare.text = myDropper.solution;
+                    mySquare.solution = myDropper.solution;
+                    myText.text = 'Use a Base to turn the solution in the beaker to Red'
 
                 }
-                else if ((mySquare.solution === myTurmeric.solution && myBrush.solution === baseText) ||
-                    (mySquare.solution === baseText && myBrush.solution === 'Turmeric')) {
+                else if ((mySquare.solution === myTurmeric.solution && myDropper.solution === baseText) ||
+                    (mySquare.solution === baseText && myDropper.solution === 'Turmeric')) {
                     mySquare.image.src = 'redBeaker.png'
                     mySquare.color = 'Red'
                     mySquare.solution = 'Vermilion';
-                    mySquare.text = 'Vermilion Soln';
-                    myText.text = 'Use and Acid to turn back the solution in the beaker to yellow'
+                    mySquare.text = 'Vermilion Solution';
+                    myText.text = 'Use an Acid to turn back the solution in the beaker to Yellow'
                 }
-                else if ((mySquare.solution === 'Vermilion' && myBrush.solution === acidText)) {
+                else if ((mySquare.solution === 'Vermilion' && myDropper.solution === acidText)) {
                     mySquare.color = 'Yellow'
                     mySquare.image.src = 'yellowBeaker.png'
 
                     mySquare.solution = myTurmeric.solution;
-                    mySquare.text = myTurmeric.text + ' Soln';
-                    myText.text = 'Use and Base to turn back the solution in the beaker to red'
+                    mySquare.text = myTurmeric.text + ' Solution';
+                    myText.text = 'Use a Base to turn back the solution in the beaker to Red'
 
                 }
-                else if ((mySquare.solution === acidText && myBrush.solution === myTurmeric.solution)) {
+                else if ((mySquare.solution === acidText && myDropper.solution === myTurmeric.solution)) {
                     // mySquare.color = 'Yellow'
                     mySquare.solution = myTurmeric.solution;
                     mySquare.text = myTurmeric.text;
@@ -346,20 +358,20 @@
 
                 myGameArea.x = null;
                 myGameArea.y = null;
-                myBrush.image.src = 'dropper.png'
+                myDropper.image.src = 'dropper.png'
 
-                myBrush.x = myBrush.initialX;
-                myBrush.y = myBrush.initialY;
+                myDropper.x = myDropper.initialX;
+                myDropper.y = myDropper.initialY;
 
-                // myBrush.text = myBrush.initialText;
-                // myBrush.color = myBrush.initialColor;
+                // myDropper.text = myDropper.initialText;
+                // myDropper.color = myDropper.initialColor;
             }
 
             else {
                 myGameArea.clear();
                 if (myGameArea.x && myGameArea.y) {
-                    myBrush.x = myGameArea.x
-                    myBrush.y = myGameArea.y;
+                    myDropper.x = myGameArea.x
+                    myDropper.y = myGameArea.y;
                 }
             }
 
@@ -372,7 +384,7 @@
             mySquare.update();
             // myCircle.update();
             myText.update();
-            myBrush.update();
+            myDropper.update();
         }
 
     </script>
