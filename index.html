@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            border: 1px solid #d3d3d3;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body onload="startGame()">
+    <script>
+
+        var mySquare;
+        var mySoapSoln;
+        var myVinegar;
+        var mylemonJuice;
+        var myNaHCO3;
+        var myBrush;
+        var myTurmeric;
+        var myGameArea;
+        var baseText = 'Base';
+        var acidText = 'Acid';
+
+        function startGame() {
+            myBackground = new picture(1301 / 1.5, 791 / 1.5, 'bg.jpg', 0, 0, '', '')
+            // mySquare = new component(150, 150, "white", 127, 294, 'Paint this...', '');
+            mySquare = new picture(125, 150, "emptyBeaker.png", 127, 315, 'Paint this...', '');
+            mySoapSoln = new picture(50, 50, "blueBeaker.png", 450, 394, 'Soap Soln', baseText);
+            myVinegar = new picture(50, 50, "blueBeaker.png", 520, 394, 'Vinegar', acidText);
+            mylemonJuice = new picture(50, 50, "blueBeaker.png", 590, 394, 'lemonJuice', acidText);
+            myNaHCO3 = new picture(50, 50, "blueBeaker.png", 660, 394, 'Baking Soda Soln', baseText);
+            myTurmeric = new picture(50, 50, "yellowBeaker.png", 730, 394, 'Turmeric', 'Turmeric');
+            // myBrush = new component(25, 25, "white", 570, 330, 'brush', '');
+            myBrush = new picture(20, 70, "dropper.png", 570, 240, '', '');
+            myGameArea.start();
+        }
+
+        var myGameArea = {
+            canvas: document.createElement("canvas"),
+            start: function () {
+                // this.canvas.width = window.innerWidth;
+                // this.canvas.height = window.innerHeight;
+                this.canvas.width = myBackground.width;
+                this.canvas.height = myBackground.height;
+                this.context = this.canvas.getContext("2d");
+                document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+                this.interval = setInterval(updateGameArea, 20);
+            },
+            clear: function () {
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            },
+            stop: function () {
+                clearInterval(this.interval);
+            }
+        }
+        function picture(width, height, src, x, y, text, solution) {
+            this.image = new Image();
+            this.image.src = src
+            this.width = width;
+            this.height = height;
+            this.speedX = 0;
+            this.speedY = 0;
+            this.x = x;
+            this.y = y;
+            this.text = text;
+
+            this.update = function () {
+                ctx = myGameArea.context;
+                ctx.drawImage(this.image,
+                    this.x,
+                    this.y,
+                    this.width, this.height);
+                ctx.fillText(this.text, this.x + (this.width / 2 - (this.text.length * 2.5)), this.y + (this.height / 2) );
+
+            }
+            this.crashWith = function (otherobj) {
+                var obj = this;
+                return checkCrash(obj, otherobj)
+            }
+
+            this.solution = solution
+            this.initialSolution = solution
+
+            this.initialText = text;
+
+            // this.initialColor = color;
+            this.initialX = x;
+            this.initialY = y;
+        }
+
+        function component(width, height, color, x, y, text, solution) {
+
+            this.width = width;
+            this.height = height;
+            this.speedX = 0;
+            this.speedY = 0;
+            this.x = x;
+            this.y = y;
+            this.color = color;
+
+            this.update = function () {
+                ctx = myGameArea.context;
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.fillStyle = "#000000";
+                ctx.shadowBlur = 10;
+                ctx.fillText(this.text, this.x + (this.width / 2 - (this.text.length * 2.5)), this.y + (this.height / 2) + (this.height / 1.3));
+                ctx.shadowColor = "black";
+            }
+
+            this.crashWith = function (otherobj) {
+                var obj = this;
+                return checkCrash(obj, otherobj)
+            }
+
+            this.solution = solution
+            this.initialSolution = solution
+
+            this.text = text;
+            this.initialText = text;
+
+            this.initialColor = color;
+            this.initialX = x;
+            this.initialY = y;
+        }
+
+        function checkFocus(event, obj) {
+
+            var myleft = obj.x;
+            var myright = obj.x + (obj.width);
+            var mytop = obj.y;
+            var mybottom = obj.y + (obj.height);
+            var crash = true;
+            if ((mybottom < event.clientY) || (mytop > event.clientY) || (myright < event.clientX) || (myleft > event.clientX)) {
+                crash = false;
+            }
+            return crash;
+        }
+
+        myGameArea.canvas.addEventListener('mousedown', mousedown)
+        function mousedown(event) {
+            if (checkFocus(event, myBrush)) {
+                myGameArea.canvas.addEventListener('mousemove', mousemove)
+                myGameArea.canvas.addEventListener('mouseup', mouseup)
+            }
+        }
+        function mouseup(event) {
+            myGameArea.canvas.removeEventListener('mousemove', mousemove)
+            myGameArea.canvas.removeEventListener('mouseup', mouseup)
+        }
+        function mousemove(event) {
+            myGameArea.x = event.pageX;
+            myGameArea.y = event.pageY;
+            updateGameArea();
+        }
+
+
+        function checkCrash(currObj, otherobj) {
+            var myleft = currObj.x;
+            var myright = currObj.x + (currObj.width);
+            var mytop = currObj.y; currObj
+            var mybottom = currObj.y + (currObj.height);
+            var otherleft = otherobj.x;
+            var otherright = otherobj.x + (otherobj.width);
+            var othertop = otherobj.y;
+            var otherbottom = otherobj.y + (otherobj.height);
+            var crash = true;
+            if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+                crash = false;
+            }
+            return crash;
+        }
+
+        function updateCrash(obj) {
+            mouseup()
+            myBrush.solution = obj.solution;
+            // myBrush.text = obj.text;
+
+            myBrush.x = myBrush.initialX;
+            myBrush.y = myBrush.initialY;
+            // myGameArea.stop();
+            myGameArea.x = null;
+            myGameArea.y = null;
+        }
+
+        function updateGameArea() {
+
+            if (myBrush.crashWith(myTurmeric)) {
+                updateCrash(myTurmeric)
+                myBrush.image.src = 'yellowDropper.png'
+
+            }
+            else if (myBrush.crashWith(myVinegar)) {
+                updateCrash(myVinegar)
+                myBrush.image.src = 'blueDropper.png'
+            }
+
+            else if (myBrush.crashWith(mylemonJuice)) {
+                updateCrash(mylemonJuice)
+                myBrush.image.src = 'blueDropper.png'
+
+            }
+            else if (myBrush.crashWith(myNaHCO3)) {
+                updateCrash(myNaHCO3)
+                myBrush.image.src = 'blueDropper.png'
+
+            }
+            else if (myBrush.crashWith(mySoapSoln)) {
+                updateCrash(mySoapSoln)
+                myBrush.image.src = 'blueDropper.png'
+
+            }
+
+            else if (myBrush.crashWith(mySquare)) {
+                mouseup()
+
+                // switch (mySquare.solution) {
+                //     case mySquare.initialSolution:
+                //         // mySquare.text = myBrush.text;
+                //         mySquare.text = myBrush.solution;
+                //         mySquare.solution = myBrush.solution;
+                //         break;
+                //     case myTurmeric.solution:
+                //         if (myBrush.solution === baseText) {
+                //             mySquare.color = 'Red'
+                //             mySquare.solution = 'Vermilion';
+                //             mySquare.text = 'Vermilion';
+                //         }
+                //         break;
+                //     case 'Vermilion':
+                //         if (myBrush.solution === acidText) {
+                //             mySquare.color = 'Yellow'
+                //             mySquare.solution = myTurmeric.solution;
+                //             mySquare.text = myTurmeric.text;
+                //         }
+                //         break;
+
+                //     case baseText:
+                //     if (myBrush.solution === acidText) {
+
+                //     }
+                //         break;
+
+                //     default:
+                //         break;
+                // }
+
+
+
+                if (mySquare.solution === mySquare.initialSolution) {
+                    // mySquare.text = myBrush.text;
+                    mySquare.text = myBrush.solution;
+                    mySquare.solution = myBrush.solution;
+                }
+                else if ((mySquare.solution === myTurmeric.solution && myBrush.solution === baseText) ||
+                    (mySquare.solution === baseText && myBrush.solution === 'Turmeric')) {
+                    mySquare.image.src = 'redBeaker.png'
+                    mySquare.color = 'Red'
+                    mySquare.solution = 'Vermilion';
+                    mySquare.text = 'Vermilion Soln';
+                }
+                else if ((mySquare.solution === 'Vermilion' && myBrush.solution === acidText)) {
+                    mySquare.color = 'Yellow'
+                    mySquare.image.src = 'yellowBeaker.png'
+
+                    mySquare.solution = myTurmeric.solution;
+                    mySquare.text = myTurmeric.text + ' Soln';
+                }
+                else if ((mySquare.solution === acidText && myBrush.solution === myTurmeric.solution)) {
+                    // mySquare.color = 'Yellow'
+                    mySquare.solution = myTurmeric.solution;
+                    mySquare.text = myTurmeric.text;
+                }
+
+                myGameArea.x = null;
+                myGameArea.y = null;
+                myBrush.image.src = 'dropper.png'
+
+                myBrush.x = myBrush.initialX;
+                myBrush.y = myBrush.initialY;
+
+                // myBrush.text = myBrush.initialText;
+                // myBrush.color = myBrush.initialColor;
+            }
+
+            else {
+                myGameArea.clear();
+                if (myGameArea.x && myGameArea.y) {
+                    myBrush.x = myGameArea.x
+                    myBrush.y = myGameArea.y;
+                    console.log(myGameArea.y);
+                    
+                }
+            }
+
+            myBackground.update();
+            mylemonJuice.update();
+            myNaHCO3.update();
+            myTurmeric.update();
+            mySoapSoln.update();
+            myVinegar.update();
+            mySquare.update();
+            // myCircle.update();
+            myBrush.update();
+        }
+
+    </script>
+
+</body>
+
+</html>
