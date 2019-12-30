@@ -204,6 +204,22 @@
             myGameArea.y = event.pageY;
             updateGameArea();
         }
+        myGameArea.canvas.addEventListener('touchstart', touchDown)
+        function touchDown(event) {
+            if (checkFocus(event, myBrush)) {
+                myGameArea.canvas.addEventListener('touchmove', touchMove)
+                myGameArea.canvas.addEventListener('touchend', touchEnd)
+            }
+        }
+        function touchEnd(event) {
+            myGameArea.canvas.removeEventListener('touchmove', touchMove)
+            myGameArea.canvas.removeEventListener('touchend', touchEnd)
+        }
+        function touchMove(event) {
+            myGameArea.x = event.pageX;
+            myGameArea.y = event.pageY;
+            updateGameArea();
+        }
 
 
         function checkCrash(currObj, otherobj) {
