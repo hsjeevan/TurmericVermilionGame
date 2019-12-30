@@ -31,17 +31,17 @@
         var acidText = 'Acid';
 
         function startGame() {
-            myBackground = new picture(1301 / 1.5, 791 / 1.5, 'bg.jpg', 0, 0, '', '')
-            // mySquare = new component(150, 150, "white", 127, 294, 'Paint this...', '');
-            mySquare = new picture(125, 150, "emptyBeaker.png", 127, 315, 'Paint this...', '');
-            mySoapSoln = new picture(50, 50, "blueBeaker.png", 450, 394, 'Soap Solution', baseText);
-            myVinegar = new picture(50, 50, "blueBeaker.png", 520, 394, 'Vinegar', acidText);
-            mylemonJuice = new picture(50, 50, "blueBeaker.png", 590, 394, 'Lemon Juice', acidText);
-            myNaHCO3 = new picture(50, 50, "blueBeaker.png", 660, 394, 'Baking Soda', baseText);
-            myTurmeric = new picture(50, 50, "yellowBeaker.png", 730, 394, 'Turmeric', 'Turmeric');
-            // myDropper = new component(25, 25, "white", 570, 330, 'brush', '');
-            myDropper = new picture(20, 70, "dropper.png", 570, 240, '', '');
-            myText = new textComponent('15px', 'consolas', 'black', (1301 / 1.5) / 2.5, (791 / 1.5) / 2);
+            myBackground = new picture(1301 / 1.5, 791 / 1.5, 'bg.jpg', 0, 0, '', '', 0)
+            // mySquare = new component(150, 150, "white", 127, 294, 'Paint this...', '',0);
+            mySquare = new picture(125, 150, "emptyBeaker.png", 127, 315, 'Paint this...', '', 0);
+            mySoapSoln = new picture(50, 50, "blueBeaker.png", 450, 394, 'Soap Solution', baseText, 0);
+            myVinegar = new picture(50, 50, "blueBeaker.png", 520, 394, 'Vinegar', acidText, 0);
+            mylemonJuice = new picture(50, 50, "blueBeaker.png", 590, 394, 'Lemon Juice', acidText, 0);
+            myNaHCO3 = new picture(50, 50, "blueBeaker.png", 660, 394, 'Baking Soda', baseText, 0);
+            myTurmeric = new picture(50, 50, "yellowBeaker.png", 730, 394, 'Turmeric', 'Turmeric', 0);
+            // myDropper = new component(25, 25, "white", 570, 330, 'brush','', 0);
+            myDropper = new picture(20, 70, "dropper.png", 570, 240, '', '', 30);
+            myText = new textComponent('15px', 'consolas', 'black', (1301 / 1.5) / 2.5, (791 / 1.5) / 2, 0);
             myGameArea.start();
         }
 
@@ -63,7 +63,7 @@
                 clearInterval(this.interval);
             }
         }
-        function picture(width, height, src, x, y, text, solution) {
+        function picture(width, height, src, x, y, text, solution, textOffset) {
             this.image = new Image();
             this.image.src = src
             this.width = width;
@@ -84,7 +84,7 @@
                 // ctx.fillText(this.text, this.x + (this.width / 2 - (this.text.length * 2.5)), this.y + (this.height / 2));
                 ctx.textAlign = 'center';
 
-                wrapText(ctx, this.text, this.x + (this.width / 2 ), this.y + (this.height / 2), 30, 10 )
+                wrapText(ctx, this.text, this.x + (this.width / 2) + textOffset, this.y + (this.height / 2), 30, 10)
                 // - (this.text.length * 2.5)
                 ctx.restore();
             }
@@ -115,10 +115,8 @@
                 ctx.save();
                 ctx.font = this.size + " " + this.fontFamily;
                 ctx.fillStyle = color;
-                wrapText(ctx, this.text, this.x, this.y, 220, 20 )
+                wrapText(ctx, this.text, this.x, this.y, 220, 20)
                 // ctx.fillText(this.text, this.x, this.y);
-
-
                 ctx.restore();
 
             }
@@ -162,7 +160,7 @@
                 ctx.fillRect(this.x, this.y, this.width, this.height);
                 ctx.fillStyle = "#000000";
                 ctx.shadowBlur = 10;
-                ctx.fillText(this.text, this.x + (this.width / 2 ), this.y + (this.height / 2) );
+                ctx.fillText(this.text, this.x + (this.width / 2), this.y + (this.height / 2));
                 ctx.shadowColor = "black";
                 // - (this.text.length * 2.5)
                 // + (this.height / 1.3)
