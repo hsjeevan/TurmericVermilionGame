@@ -18,7 +18,7 @@
 <body onload="startGame()">
     <script>
 
-        var mySquare;
+        var myBeaker;
         var mySoapSoln;
         var myVinegar;
         var mylemonJuice;
@@ -32,8 +32,8 @@
 
         function startGame() {
             myBackground = new picture(1301 / 1.5, 791 / 1.5, 'bg.jpg', 0, 0, '', '', 0)
-            // mySquare = new component(150, 150, "white", 127, 294, 'Paint this...', '',0);
-            mySquare = new picture(125, 150, "emptyBeaker.png", 127, 315, 'Paint this...', '', 0);
+            // myBeaker = new component(150, 150, "white", 127, 294, 'Paint this...', '',0);
+            myBeaker = new picture(125, 150, "emptyBeaker.png", 127, 290, 'Paint this...', '', 0);
             mySoapSoln = new picture(50, 50, "blueBeaker.png", 450, 394, 'Soap Solution', baseText, 0);
             myVinegar = new picture(50, 50, "blueBeaker.png", 520, 394, 'Vinegar', acidText, 0);
             mylemonJuice = new picture(50, 50, "blueBeaker.png", 590, 394, 'Lemon Juice', acidText, 0);
@@ -286,29 +286,29 @@
 
             }
 
-            else if (myDropper.crashWith(mySquare)) {
+            else if (myDropper.crashWith(myBeaker)) {
                 myDropper.text = ''
 
                 mouseup()
 
-                // switch (mySquare.solution) {
-                //     case mySquare.initialSolution:
-                //         // mySquare.text = myDropper.text;
-                //         mySquare.text = myDropper.solution;
-                //         mySquare.solution = myDropper.solution;
+                // switch (myBeaker.solution) {
+                //     case myBeaker.initialSolution:
+                //         // myBeaker.text = myDropper.text;
+                //         myBeaker.text = myDropper.solution;
+                //         myBeaker.solution = myDropper.solution;
                 //         break;
                 //     case myTurmeric.solution:
                 //         if (myDropper.solution === baseText) {
-                //             mySquare.color = 'Red'
-                //             mySquare.solution = 'Vermilion';
-                //             mySquare.text = 'Vermilion';
+                //             myBeaker.color = 'Red'
+                //             myBeaker.solution = 'Vermilion';
+                //             myBeaker.text = 'Vermilion';
                 //         }
                 //         break;
                 //     case 'Vermilion':
                 //         if (myDropper.solution === acidText) {
-                //             mySquare.color = 'Yellow'
-                //             mySquare.solution = myTurmeric.solution;
-                //             mySquare.text = myTurmeric.text;
+                //             myBeaker.color = 'Yellow'
+                //             myBeaker.solution = myTurmeric.solution;
+                //             myBeaker.text = myTurmeric.text;
                 //         }
                 //         break;
 
@@ -324,34 +324,34 @@
 
 
 
-                if (mySquare.solution === mySquare.initialSolution) {
-                    // mySquare.text = myDropper.text;
-                    mySquare.text = myDropper.solution;
-                    mySquare.solution = myDropper.solution;
+                if (myBeaker.solution === myBeaker.initialSolution) {
+                    // myBeaker.text = myDropper.text;
+                    myBeaker.text = myDropper.solution;
+                    myBeaker.solution = myDropper.solution;
                     myText.text = 'Use a Base to turn the solution in the beaker to Red'
 
                 }
-                else if ((mySquare.solution === myTurmeric.solution && myDropper.solution === baseText) ||
-                    (mySquare.solution === baseText && myDropper.solution === 'Turmeric')) {
-                    mySquare.image.src = 'redBeaker.png'
-                    mySquare.color = 'Red'
-                    mySquare.solution = 'Vermilion';
-                    mySquare.text = 'Vermilion Solution';
+                else if ((myBeaker.solution === myTurmeric.solution && myDropper.solution === baseText) ||
+                    (myBeaker.solution === baseText && myDropper.solution === 'Turmeric')) {
+                    myBeaker.image.src = 'redBeaker.png'
+                    myBeaker.color = 'Red'
+                    myBeaker.solution = 'Vermilion';
+                    myBeaker.text = 'Vermilion Solution';
                     myText.text = 'Use an Acid to turn back the solution in the beaker to Yellow'
                 }
-                else if ((mySquare.solution === 'Vermilion' && myDropper.solution === acidText)) {
-                    mySquare.color = 'Yellow'
-                    mySquare.image.src = 'yellowBeaker.png'
+                else if ((myBeaker.solution === 'Vermilion' && myDropper.solution === acidText)) {
+                    myBeaker.color = 'Yellow'
+                    myBeaker.image.src = 'yellowBeaker.png'
 
-                    mySquare.solution = myTurmeric.solution;
-                    mySquare.text = myTurmeric.text + ' Solution';
+                    myBeaker.solution = myTurmeric.solution;
+                    myBeaker.text = myTurmeric.text + ' Solution';
                     myText.text = 'Use a Base to turn back the solution in the beaker to Red'
 
                 }
-                else if ((mySquare.solution === acidText && myDropper.solution === myTurmeric.solution)) {
-                    // mySquare.color = 'Yellow'
-                    mySquare.solution = myTurmeric.solution;
-                    mySquare.text = myTurmeric.text;
+                else if ((myBeaker.solution === acidText && myDropper.solution === myTurmeric.solution)) {
+                    // myBeaker.color = 'Yellow'
+                    myBeaker.solution = myTurmeric.solution;
+                    myBeaker.text = myTurmeric.text;
                 }
 
                 myGameArea.x = null;
@@ -379,7 +379,7 @@
             myTurmeric.update();
             mySoapSoln.update();
             myVinegar.update();
-            mySquare.update();
+            myBeaker.update();
             // myCircle.update();
             myText.update();
             myDropper.update();
