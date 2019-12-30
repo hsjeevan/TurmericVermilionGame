@@ -26,6 +26,7 @@
         var myBrush;
         var myTurmeric;
         var myGameArea;
+        var myText;
         var baseText = 'Base';
         var acidText = 'Acid';
 
@@ -40,6 +41,7 @@
             myTurmeric = new picture(50, 50, "yellowBeaker.png", 730, 394, 'Turmeric', 'Turmeric');
             // myBrush = new component(25, 25, "white", 570, 330, 'brush', '');
             myBrush = new picture(20, 70, "dropper.png", 570, 240, '', '');
+            myText = new textComponent('15px', 'consolas', 'black', (1301 / 1.5) / 2.5, (791 / 1.5) / 2);
             myGameArea.start();
         }
 
@@ -78,7 +80,7 @@
                     this.x,
                     this.y,
                     this.width, this.height);
-                ctx.fillText(this.text, this.x + (this.width / 2 - (this.text.length * 2.5)), this.y + (this.height / 2) );
+                ctx.fillText(this.text, this.x + (this.width / 2 - (this.text.length * 2.5)), this.y + (this.height / 2));
 
             }
             this.crashWith = function (otherobj) {
@@ -94,6 +96,47 @@
             // this.initialColor = color;
             this.initialX = x;
             this.initialY = y;
+        }
+
+        function textComponent(size, fontFamily, color, x, y) {
+            this.text = 'Use the dropper to pippet out the solution into the beaker ----------------->'
+            this.x = x;
+            this.y = y;
+            this.color = color;
+            this.size = size;
+            this.fontFamily = fontFamily;
+            this.update = function () {
+                ctx = myGameArea.context;
+                ctx.save();
+                ctx.font = this.size + " " + this.fontFamily;
+                ctx.fillStyle = color;
+                wrapText(ctx, this.text, this.x, this.y, 220, 20 )
+                // ctx.fillText(this.text, this.x, this.y);
+
+
+                ctx.restore();
+
+            }
+        }
+
+        function wrapText(context, text, x, y, maxWidth, lineHeight) {
+            var words = text.split(' ');
+            var line = '';
+
+            for (var n = 0; n < words.length; n++) {
+                var testLine = line + words[n] + ' ';
+                var metrics = context.measureText(testLine);
+                var testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    context.fillText(line, x, y);
+                    line = words[n] + ' ';
+                    y += lineHeight;
+                }
+                else {
+                    line = testLine;
+                }
+            }
+            context.fillText(line, x, y);
         }
 
         function component(width, height, color, x, y, text, solution) {
@@ -192,7 +235,7 @@
         }
 
         function updateGameArea() {
-
+            // myText.text ='Hello'
             if (myBrush.crashWith(myTurmeric)) {
                 updateCrash(myTurmeric)
                 myBrush.image.src = 'yellowDropper.png'
@@ -259,6 +302,8 @@
                     // mySquare.text = myBrush.text;
                     mySquare.text = myBrush.solution;
                     mySquare.solution = myBrush.solution;
+                    myText.text = 'Use and Base to turn the solution in the beaker to red'
+
                 }
                 else if ((mySquare.solution === myTurmeric.solution && myBrush.solution === baseText) ||
                     (mySquare.solution === baseText && myBrush.solution === 'Turmeric')) {
@@ -266,6 +311,7 @@
                     mySquare.color = 'Red'
                     mySquare.solution = 'Vermilion';
                     mySquare.text = 'Vermilion Soln';
+                    myText.text = 'Use and Acid to turn back the solution in the beaker to yellow'
                 }
                 else if ((mySquare.solution === 'Vermilion' && myBrush.solution === acidText)) {
                     mySquare.color = 'Yellow'
@@ -273,6 +319,8 @@
 
                     mySquare.solution = myTurmeric.solution;
                     mySquare.text = myTurmeric.text + ' Soln';
+                    myText.text = 'Use and Base to turn back the solution in the beaker to red'
+
                 }
                 else if ((mySquare.solution === acidText && myBrush.solution === myTurmeric.solution)) {
                     // mySquare.color = 'Yellow'
@@ -296,8 +344,6 @@
                 if (myGameArea.x && myGameArea.y) {
                     myBrush.x = myGameArea.x
                     myBrush.y = myGameArea.y;
-                    console.log(myGameArea.y);
-                    
                 }
             }
 
@@ -309,6 +355,7 @@
             myVinegar.update();
             mySquare.update();
             // myCircle.update();
+            myText.update();
             myBrush.update();
         }
 
